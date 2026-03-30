@@ -288,6 +288,14 @@ if(cart[n].cantidad<=0) delete cart[n];
 render();
 }
 
+  function comprar(n,p){
+let txt=`🛒 Hola, quiero comprar:%0A%0A📱 ${n}%0A💰 Precio: Bs ${p.toLocaleString()}`;
+
+let url="https://wa.me/59170341190?text="+encodeURIComponent(txt);
+
+window.open(url, "_blank");
+}
+  
 function vaciar(){cart={};render();}
 
 function togglePanel(){
