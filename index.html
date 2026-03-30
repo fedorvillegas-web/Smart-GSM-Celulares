@@ -9,6 +9,7 @@
 body {margin:0;font-family:Arial;background:#f4f6f9;}
 header {background:#111;color:white;padding:15px;text-align:center;font-size:22px;}
 
+/* BOTON */
 #abrirCarrito {
     position:fixed;
     bottom:20px;
@@ -33,6 +34,7 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
     border-radius:50%;
 }
 
+/* PRODUCTOS */
 .container {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -58,11 +60,12 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
     cursor:pointer;
 }
 
+/* PANEL */
 .panel {
     position: fixed;
     right: 0;
     top: 0;
-    width: 340px;
+    width: 360px;
     height: 100%;
     background: white;
     box-shadow: -3px 0 10px rgba(0,0,0,0.2);
@@ -75,12 +78,30 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 .panel.activo {transform: translateX(0);}
 
-.top {display:flex;justify-content:space-between;}
+.top {display:flex;justify-content:space-between;align-items:center;}
 
-.item {margin:8px 0;}
+.item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:10px 0;
+    border-bottom:1px solid #eee;
+    padding-bottom:5px;
+}
 
-.total {margin-top:auto;font-size:20px;font-weight:bold;}
+.controls button {
+    padding:3px 8px;
+    margin:0 2px;
+}
 
+/* TOTAL */
+.total {
+    margin-top:auto;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* BOTONES */
 .btn2 {
     margin-top:8px;
     padding:10px;
@@ -105,6 +126,7 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 <div class="container" id="productos"></div>
 
+<!-- PANEL -->
 <div class="panel" id="panel">
 
 <div class="top">
@@ -117,8 +139,8 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 <div class="total">Total: Bs <span id="total">0</span></div>
 
 <button class="btn2 ver" onclick="generar()">👁 Ver Pedido</button>
-<button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar Pedido</button>
-<button class="btn2 whatsapp" onclick="enviar()">📲 Enviar WhatsApp</button>
+<button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar</button>
+<button class="btn2 whatsapp" onclick="enviar()">📲 WhatsApp</button>
 
 </div>
 
@@ -176,6 +198,7 @@ const productos = [
 ["XIAOMI REDMI 15C 4/256",1085]
 ];
 
+/* GENERAR PRODUCTOS */
 let html="";
 productos.forEach(p=>{
 html+=`
@@ -188,12 +211,18 @@ html+=`
 });
 document.getElementById("productos").innerHTML=html;
 
+/* FUNCIONES */
 function add(nombre, precio){
 if(!cart[nombre]) cart[nombre]={precio:precio,cantidad:1};
 else cart[nombre].cantidad++;
-
 render();
 document.getElementById("panel").classList.add("activo");
+}
+
+function cambiar(nombre,val){
+cart[nombre].cantidad+=val;
+if(cart[nombre].cantidad<=0) delete cart[nombre];
+render();
 }
 
 function render(){
@@ -203,9 +232,22 @@ let cantidad=0;
 
 for(let i in cart){
 let p=cart[i];
-total+=p.precio*p.cantidad;
+let subtotal=p.precio*p.cantidad;
+total+=subtotal;
 cantidad+=p.cantidad;
-html+=`<div class="item">${i} x${p.cantidad}</div>`;
+
+html+=`
+<div class="item">
+    <div style="width:45%">${i}</div>
+
+    <div class="controls">
+        <button onclick="cambiar('${i}',-1)">−</button>
+        ${p.cantidad}
+        <button onclick="cambiar('${i}',1)">+</button>
+    </div>
+
+    <div>Bs ${subtotal}</div>
+</div>`;
 }
 
 document.getElementById("lista").innerHTML=html;
@@ -213,10 +255,7 @@ document.getElementById("total").innerText=total;
 document.getElementById("contador").innerText=cantidad;
 }
 
-function vaciar(){
-cart={};
-render();
-}
+function vaciar(){cart={};render();}
 
 function togglePanel(){
 document.getElementById("panel").classList.toggle("activo");
