@@ -6,159 +6,153 @@
 <title>Smart GSM</title>
 
 <style>
-body {
-    margin:0;
-    font-family: 'Segoe UI', Arial;
-    background:#f5f6fa;
-}
+body {margin:0;font-family:'Segoe UI',Arial;background:#f6f7fb;}
 
 /* HEADER */
 header {
-    background:#0f172a;
-    color:white;
-    padding:18px;
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
+background:#0f172a;color:white;padding:15px;
+display:flex;flex-direction:column;gap:10px;
 }
+
+.topbar {
+display:flex;justify-content:space-between;align-items:center;
+}
+
+input {
+padding:8px;border-radius:8px;border:none;width:200px;
+}
+
+/* FILTROS */
+#filtros {
+display:flex;gap:6px;flex-wrap:wrap;
+}
+#filtros button {
+background:#e5e7eb;border:none;padding:6px 10px;
+border-radius:8px;cursor:pointer;font-size:12px;
+}
+#filtros button:hover {background:#0d6efd;color:white;}
 
 /* GRID */
 .container {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap:20px;
-    padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;padding:20px;
 }
 
 /* CARD */
 .card {
-    background:white;
-    border-radius:16px;
-    padding:15px;
-    text-align:center;
-    box-shadow:0 4px 15px rgba(0,0,0,0.08);
-    transition:0.2s;
+background:white;border-radius:16px;padding:15px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+transition:0.2s;
 }
+.card:hover {transform:translateY(-5px);}
+.card img {width:100%;height:140px;object-fit:contain;}
 
-.card:hover {
-    transform:translateY(-5px);
-}
-
-.card img {
-    width:100%;
-    height:140px;
-    object-fit:contain;
-}
-
-.price {
-    font-size:18px;
-    font-weight:bold;
-    margin:8px 0;
-}
+.price {font-weight:bold;margin:8px 0;}
 
 .btn {
-    background:#0d6efd;
-    color:white;
-    border:none;
-    padding:10px;
-    border-radius:10px;
-    cursor:pointer;
-    width:100%;
+background:#0d6efd;color:white;border:none;
+padding:10px;border-radius:10px;cursor:pointer;width:100%;
 }
 
 /* BOTON CARRITO */
 #abrirCarrito {
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#0f172a;
-    color:white;
-    border:none;
-    padding:16px;
-    border-radius:50%;
-    font-size:20px;
-    cursor:pointer;
+position:fixed;bottom:20px;right:20px;
+background:#0f172a;color:white;border:none;
+padding:16px;border-radius:50%;font-size:20px;
 }
 
 #contador {
-    position:absolute;
-    top:-5px;
-    right:-5px;
-    background:red;
-    color:white;
-    font-size:12px;
-    padding:3px 6px;
-    border-radius:50%;
+position:absolute;top:-5px;right:-5px;
+background:red;color:white;font-size:12px;
+padding:3px 6px;border-radius:50%;
 }
 
 /* PANEL */
 .panel {
-    position:fixed;
-    right:0;
-    top:0;
-    width:350px;
-    height:100%;
-    background:white;
-    box-shadow:-5px 0 20px rgba(0,0,0,0.2);
-    padding:15px;
-    transform:translateX(100%);
-    transition:0.3s;
-    display:flex;
-    flex-direction:column;
+position:fixed;right:0;top:0;width:350px;height:100%;
+background:white;box-shadow:-5px 0 20px rgba(0,0,0,0.2);
+padding:15px;transform:translateX(100%);
+transition:0.3s;display:flex;flex-direction:column;
 }
-
 .panel.activo {transform:translateX(0);}
 
 /* OVERLAY */
 #overlay {
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.4);
-    display:none;
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.4);display:none;
 }
-
 #overlay.activo {display:block;}
 
+/* ITEMS CARRITO */
 .item {
-    display:flex;
-    justify-content:space-between;
-    margin:10px 0;
-    border-bottom:1px solid #eee;
-    padding-bottom:5px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#f9fafb;
+padding:8px;
+border-radius:10px;
+margin:8px 0;
+}
+
+.item div:first-child {
+width:45%;
+font-size:13px;
 }
 
 .controls button {
-    padding:3px 8px;
+background:#e5e7eb;
+border:none;
+padding:4px 8px;
+border-radius:6px;
+cursor:pointer;
+}
+.controls button:hover {
+background:#0d6efd;
+color:white;
 }
 
 .total {
-    margin-top:auto;
-    font-size:20px;
-    font-weight:bold;
+margin-top:auto;
+font-weight:bold;
+font-size:18px;
 }
 
 /* BOTONES */
 .btn2 {
-    margin-top:8px;
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
+margin-top:8px;
+padding:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
 }
-
 .whatsapp {background:#25D366;color:white;}
 .vaciar {background:#dc3545;color:white;}
-.ver {background:#111;color:white;}
 
 </style>
 </head>
 
 <body>
 
-<header>📱 Smart GSM</header>
+<header>
+
+<div class="topbar">
+<div>📱 Smart GSM</div>
+<input type="text" id="buscador" placeholder="Buscar...">
+</div>
+
+<div id="filtros">
+<button onclick="filtrar('')">Todos</button>
+<button onclick="filtrar('APPLE')">Apple</button>
+<button onclick="filtrar('XIAOMI')">Xiaomi</button>
+<button onclick="filtrar('HONOR')">Honor</button>
+<button onclick="filtrar('REALME')">Realme</button>
+<button onclick="filtrar('TECNO')">Tecno</button>
+<button onclick="filtrar('INFINIX')">Infinix</button>
+</div>
+
+</header>
 
 <div id="overlay" onclick="cerrarPanel()"></div>
 
@@ -171,111 +165,158 @@ header {
 <!-- PANEL -->
 <div class="panel" id="panel">
 <h3>🧾 Pedido</h3>
+
 <div id="lista"></div>
 
 <div class="total">Total: Bs <span id="total">0</span></div>
 
-<button class="btn2 ver" onclick="generar()">👁 Ver Pedido</button>
 <button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar</button>
 <button class="btn2 whatsapp" onclick="enviar()">📲 WhatsApp</button>
 </div>
 
 <script>
-let cart = {};
+let cart={};
 let timer;
 
-/* PRODUCTOS */
-const productos = [
-["IPHONE 15 128GB",6019],
-["IPHONE 16 128GB",7037],
-["POCO F8 PRO",4848],
-["POCO X8 PRO",3648],
-["INFINIX GT 30 PRO",3264],
-["REALME 14 PRO+",3792],
-["HONOR X8D",2256]
+const productos=[
+["ALCATEL 3T 10 SMART 2/32",672],
+["APPLE IPHONE 15 128GB",6019],
+["APPLE IPHONE 16 128GB",7037],
+["APPLE IPHONE 17 256GB",8774],
+["APPLE IPHONE 17 PRO MAX 256GB",13632],
+["APPLE IPHONE AIR 256GB",9024],
+["HONOR MAGIC 8 LITE 8/256",3120],
+["HONOR PAD X7 4/128",1190],
+["HONOR PAD X8A 4/128",1488],
+["HONOR X5C PLUS 4/256",1190],
+["HONOR X6C 8/256",1526],
+["HONOR X7D 6/256",1738],
+["HONOR X7D 8/256",1882],
+["HONOR X8D 8/256",2256],
+["HONOR X8D 8/512",2554],
+["INFINIX GT 30 PRO 12/512",3264],
+["INFINIX HOT 60 PRO+ 8/256",1920],
+["INFINIX NOTE 50 PRO 8/256",2131],
+["INFINIX NOTE 50S 5G 8/256",2112],
+["INFINIX NOTE 50X 8/256",1728],
+["REALME 14 PRO+ 5G 12/512",3792],
+["REALME 14T 8/256",2016],
+["REALME C71 8/256",1421],
+["REALME C85 8/256",1958],
+["REALME NOTE 70 4/128",1037],
+["REALME NOTE 70 8/256",1286],
+["TECNO POVA CURVE 2 5G",2774],
+["TECNO POVA 7 4G 8/256",1757],
+["TECNO POVA 7 5G 8/256",2189],
+["TECNO SPARK GO 3 4/64",835],
+["TECNO SPARK GO 3 4/128",922],
+["XIAOMI PAD 7 PRO 8/256",4320],
+["XIAOMI PAD MINI 12/512",4656],
+["XIAOMI POCO F8 PRO 12/256",4848],
+["XIAOMI POCO F8 ULTRA 12/256",6768],
+["XIAOMI POCO M7 PRO 12/512",2256],
+["XIAOMI POCO M8 5G 8/512",2371],
+["XIAOMI POCO M8 PRO 5G 12/512",3254],
+["XIAOMI POCO M8 PRO 5G 8/256",2832],
+["XIAOMI POCO PAD 8/256",2256],
+["XIAOMI POCO PAD M1 8/256",2678],
+["XIAOMI POCO PAD X1 8/512",3312],
+["XIAOMI POCO X7 PRO 5G 12/512",3379],
+["XIAOMI POCO X8 PRO 8/256",3053],
+["XIAOMI POCO X8 PRO 12/512",3648],
+["XIAOMI POCO X8 PRO MAX 12/512",4512],
+["XIAOMI REDMI 15C 4/128",989],
+["XIAOMI REDMI 15C 4/256",1085]
 ];
 
-/* GENERAR */
+let listaOriginal=productos;
+
+/* MOSTRAR */
+function mostrar(lista){
 let html="";
-productos.forEach(p=>{
+lista.forEach(p=>{
+let img=`https://source.unsplash.com/300x300/?${p[0]},smartphone`;
 html+=`
 <div class="card">
-<img src="https://via.placeholder.com/150">
+<img src="${img}">
 <p>${p[0]}</p>
 <p class="price">Bs ${p[1].toLocaleString()}</p>
 <button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>
 </div>`;
 });
 document.getElementById("productos").innerHTML=html;
+}
+mostrar(productos);
 
-/* FUNCIONES */
-function add(nombre, precio){
-if(!cart[nombre]) cart[nombre]={precio:precio,cantidad:1};
-else cart[nombre].cantidad++;
+/* FILTRO */
+function filtrar(marca){
+let filtrado=listaOriginal.filter(p=>p[0].includes(marca));
+mostrar(filtrado);
+}
 
+/* BUSCADOR */
+document.getElementById("buscador").addEventListener("input",e=>{
+let val=e.target.value.toLowerCase();
+let filtrado=listaOriginal.filter(p=>p[0].toLowerCase().includes(val));
+mostrar(filtrado);
+});
+
+/* CARRITO */
+function add(n,p){
+if(!cart[n]) cart[n]={precio:p,cantidad:1};
+else cart[n].cantidad++;
 render();
-abrirPanelAuto();
+abrirAuto();
 }
 
-function abrirPanelAuto(){
+function abrirAuto(){
 togglePanel(true);
-
 clearTimeout(timer);
-timer=setTimeout(()=>{
-cerrarPanel();
-},3000);
+timer=setTimeout(cerrarPanel,3000);
 }
 
-function cambiar(nombre,val){
-cart[nombre].cantidad+=val;
-if(cart[nombre].cantidad<=0) delete cart[nombre];
+function cambiar(n,v){
+cart[n].cantidad+=v;
+if(cart[n].cantidad<=0) delete cart[n];
 render();
 }
 
 function render(){
-let html="";
-let total=0;
-let cantidad=0;
+let html="",total=0,cant=0;
 
 for(let i in cart){
 let p=cart[i];
-let subtotal=p.precio*p.cantidad;
-total+=subtotal;
-cantidad+=p.cantidad;
+let sub=p.precio*p.cantidad;
+total+=sub;
+cant+=p.cantidad;
 
 html+=`
 <div class="item">
 <div>${i}</div>
-
 <div class="controls">
 <button onclick="cambiar('${i}',-1)">−</button>
 ${p.cantidad}
 <button onclick="cambiar('${i}',1)">+</button>
 </div>
-
-<div>Bs ${subtotal.toLocaleString()}</div>
+<div>Bs ${sub.toLocaleString()}</div>
 </div>`;
 }
 
 document.getElementById("lista").innerHTML=html;
 document.getElementById("total").innerText=total.toLocaleString();
-document.getElementById("contador").innerText=cantidad;
+document.getElementById("contador").innerText=cant;
 }
 
 function vaciar(){cart={};render();}
 
 function togglePanel(force){
-const panel=document.getElementById("panel");
-const overlay=document.getElementById("overlay");
+const p=document.getElementById("panel");
+const o=document.getElementById("overlay");
 
-if(force===true){
-panel.classList.add("activo");
-overlay.classList.add("activo");
-return;
-}
+if(force){p.classList.add("activo");o.classList.add("activo");return;}
 
-panel.classList.toggle("activo");
-overlay.classList.toggle("activo");
+p.classList.toggle("activo");
+o.classList.toggle("activo");
 }
 
 function cerrarPanel(){
@@ -295,10 +336,6 @@ total+=p.precio*p.cantidad;
 
 txt+=`%0ATotal Bs ${total}`;
 window.open("https://wa.me/59170341190?text="+txt);
-}
-
-function generar(){
-alert("Función de imagen lista para mejorar 😏");
 }
 </script>
 
