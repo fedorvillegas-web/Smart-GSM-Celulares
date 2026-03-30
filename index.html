@@ -6,22 +6,10 @@
 <title>Smart GSM</title>
 
 <style>
-body {
-    margin:0;
-    font-family: Arial;
-    background:#f4f6f9;
-}
+body {margin:0;font-family:Arial;background:#f4f6f9;}
+header {background:#111;color:white;padding:15px;text-align:center;font-size:22px;}
 
-/* HEADER */
-header {
-    background:#111;
-    color:white;
-    padding:15px;
-    text-align:center;
-    font-size:22px;
-}
-
-/* BOTON CARRITO */
+/* BOTON */
 #abrirCarrito {
     position:fixed;
     bottom:20px;
@@ -33,10 +21,20 @@ header {
     border-radius:50%;
     font-size:20px;
     cursor:pointer;
-    z-index:1000;
 }
 
-/* PRODUCTOS */
+#contador{
+    position:absolute;
+    top:-5px;
+    right:-5px;
+    background:red;
+    color:white;
+    font-size:12px;
+    padding:3px 6px;
+    border-radius:50%;
+}
+
+/* GRID */
 .container {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -51,11 +49,7 @@ header {
     text-align:center;
 }
 
-.card img {
-    width:100%;
-    height:140px;
-    object-fit:contain;
-}
+.card img {width:100%;height:140px;object-fit:contain;}
 
 .btn {
     background:#0d6efd;
@@ -66,86 +60,29 @@ header {
     cursor:pointer;
 }
 
-/* PANEL OCULTO */
+/* PANEL */
 .panel {
-    position:fixed;
-    right:0;
-    top:0;
-    width:340px;
-    height:100%;
-    background:white;
-    box-shadow:-3px 0 10px rgba(0,0,0,0.2);
-    padding:15px;
-    display:flex;
-    flex-direction:column;
-
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 340px;
+    height: 100%;
+    background: white;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.2);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
     transform: translateX(100%);
-    transition:0.3s;
+    transition: 0.3s;
 }
 
-/* PANEL ACTIVO */
-.panel.activo {
-    transform: translateX(0);
-}
+.panel.activo {transform: translateX(0);}
 
-.top {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.cerrar {
-    background:#eee;
-    border:none;
-    padding:5px 10px;
-    border-radius:6px;
-    cursor:pointer;
-}
-
-.vaciar {
-    background:#eee;
-    border:none;
-    padding:5px 10px;
-    border-radius:6px;
-    cursor:pointer;
-    margin-left:5px;
-}
-
-.item {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin:10px 0;
-}
-
-.controls button {
-    padding:3px 8px;
-}
-
-/* TOTAL */
-.total {
-    margin-top:auto;
-    font-size:20px;
-    font-weight:bold;
-}
-
-/* BOTONES */
-.btn2 {
-    margin-top:10px;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    cursor:pointer;
-}
-
-.imgPedido {
-    background:#ddd;
-}
-
-.whatsapp {
-    background:#25D366;
-    color:white;
-}
+.top {display:flex;justify-content:space-between;}
+.item {margin:8px 0;}
+.total {margin-top:auto;font-size:20px;font-weight:bold;}
+.btn2 {margin-top:10px;padding:10px;border:none;border-radius:10px;}
+.whatsapp {background:#25D366;color:white;}
 </style>
 </head>
 
@@ -153,165 +90,135 @@ header {
 
 <header>📱 Smart GSM</header>
 
-<!-- BOTON -->
-<button id="abrirCarrito" onclick="togglePanel()">🛒</button>
+<button id="abrirCarrito" onclick="togglePanel()">🛒
+<span id="contador">0</span>
+</button>
 
-<div class="container">
-
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<p>POCO M8 PRO 12/512</p>
-<p>Bs 3254</p>
-<button class="btn" onclick="add('POCO M8 PRO 12/512',3254)">Agregar</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<p>POCO M8 PRO 8/256</p>
-<p>Bs 2832</p>
-<button class="btn" onclick="add('POCO M8 PRO 8/256',2832)">Agregar</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<p>POCO PAD 8/256</p>
-<p>Bs 2256</p>
-<button class="btn" onclick="add('POCO PAD 8/256',2256)">Agregar</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<p>POCO PAD M1 8/256</p>
-<p>Bs 2678</p>
-<button class="btn" onclick="add('POCO PAD M1 8/256',2678)">Agregar</button>
-</div>
-
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<p>POCO PAD X1 8/512</p>
-<p>Bs 3312</p>
-<button class="btn" onclick="add('POCO PAD X1 8/512',3312)">Agregar</button>
-</div>
-
-</div>
+<div class="container" id="productos"></div>
 
 <!-- PANEL -->
 <div class="panel" id="panel">
-
 <div class="top">
-<h3>🧾 MI PEDIDO</h3>
-<div>
-<button class="vaciar" onclick="vaciar()">Vaciar</button>
-<button class="cerrar" onclick="togglePanel()">❌</button>
-</div>
+<h3>🧾 Pedido</h3>
+<button onclick="togglePanel()">❌</button>
 </div>
 
 <div id="lista"></div>
-
 <div class="total">Total: Bs <span id="total">0</span></div>
 
-<button class="btn2 imgPedido" onclick="generar()">📸 Generar Imagen</button>
-<button class="btn2 whatsapp" onclick="enviar()">ENVIAR WHATSAPP</button>
-
+<button class="btn2 whatsapp" onclick="enviar()">Enviar WhatsApp</button>
 </div>
 
 <script>
 let cart = {};
 
+/* LISTA DE PRODUCTOS */
+const productos = [
+["ALCATEL 3T 10 SMART 2/32",672],
+["APPLE IPHONE 15 128GB",6019],
+["APPLE IPHONE 16 128GB",7037],
+["APPLE IPHONE 17 256GB",8774],
+["APPLE IPHONE 17 PRO MAX 256GB",13632],
+["APPLE IPHONE AIR 256GB",9024],
+["HONOR MAGIC 8 LITE 8/256",3120],
+["HONOR PAD X7 4/128",1190],
+["HONOR PAD X8A 4/128",1488],
+["HONOR X5C PLUS 4/256",1190],
+["HONOR X6C 8/256",1526],
+["HONOR X7D 6/256",1738],
+["HONOR X7D 8/256",1882],
+["HONOR X8D 8/256",2256],
+["HONOR X8D 8/512",2554],
+["INFINIX GT 30 PRO 12/512",3264],
+["INFINIX HOT 60 PRO+ 8/256",1920],
+["INFINIX NOTE 50 PRO 8/256",2131],
+["INFINIX NOTE 50S 5G 8/256",2112],
+["INFINIX NOTE 50X 8/256",1728],
+["REALME 14 PRO+ 5G 12/512",3792],
+["REALME 14T 8/256",2016],
+["REALME C71 8/256",1421],
+["REALME C85 8/256",1958],
+["REALME NOTE 70 4/128",1037],
+["REALME NOTE 70 8/256",1286],
+["TECNO POVA CURVE 2 5G",2774],
+["TECNO POVA 7 4G 8/256",1757],
+["TECNO POVA 7 5G 8/256",2189],
+["TECNO SPARK GO 3 4/64",835],
+["TECNO SPARK GO 3 4/128",922],
+["XIAOMI PAD 7 PRO 8/256",4320],
+["XIAOMI PAD MINI 12/512",4656],
+["XIAOMI POCO F8 PRO 12/256",4848],
+["XIAOMI POCO F8 ULTRA 12/256",6768],
+["XIAOMI POCO M7 PRO 12/512",2256],
+["XIAOMI POCO M8 5G 8/512",2371],
+["XIAOMI POCO M8 PRO 5G 12/512",3254],
+["XIAOMI POCO M8 PRO 5G 8/256",2832],
+["XIAOMI POCO PAD 8/256",2256],
+["XIAOMI POCO PAD M1 8/256",2678],
+["XIAOMI POCO PAD X1 8/512",3312],
+["XIAOMI POCO X7 PRO 5G 12/512",3379],
+["XIAOMI POCO X8 PRO 8/256",3053],
+["XIAOMI POCO X8 PRO 12/512",3648],
+["XIAOMI POCO X8 PRO MAX 12/512",4512],
+["XIAOMI REDMI 15C 4/128",989],
+["XIAOMI REDMI 15C 4/256",1085]
+];
+
+/* GENERAR PRODUCTOS */
+let html="";
+productos.forEach(p=>{
+html+=`
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>${p[0]}</p>
+<p>Bs ${p[1]}</p>
+<button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>
+</div>`;
+});
+document.getElementById("productos").innerHTML=html;
+
+/* CARRITO */
 function add(nombre, precio){
-    if(!cart[nombre]){
-        cart[nombre] = {precio:precio,cantidad:1};
-    } else cart[nombre].cantidad++;
+if(!cart[nombre]) cart[nombre]={precio:precio,cantidad:1};
+else cart[nombre].cantidad++;
 
-    render();
-
-    // abre automáticamente
-    document.getElementById("panel").classList.add("activo");
-}
-
-function cambiar(nombre, val){
-    cart[nombre].cantidad += val;
-    if(cart[nombre].cantidad<=0) delete cart[nombre];
-    render();
-}
-
-function vaciar(){
-    cart = {};
-    render();
+render();
+document.getElementById("panel").classList.add("activo");
 }
 
 function render(){
-    let html="";
-    let total=0;
+let html="";
+let total=0;
+let cantidad=0;
 
-    for(let item in cart){
-        let p=cart[item];
-        total+=p.precio*p.cantidad;
+for(let i in cart){
+let p=cart[i];
+total+=p.precio*p.cantidad;
+cantidad+=p.cantidad;
+html+=`<div class="item">${i} x${p.cantidad}</div>`;
+}
 
-        html+=`
-        <div class="item">
-            ${item}
-            <div class="controls">
-                <button onclick="cambiar('${item}',-1)">-</button>
-                ${p.cantidad}
-                <button onclick="cambiar('${item}',1)">+</button>
-            </div>
-        </div>`;
-    }
-
-    document.getElementById("lista").innerHTML=html;
-    document.getElementById("total").innerText=total;
+document.getElementById("lista").innerHTML=html;
+document.getElementById("total").innerText=total;
+document.getElementById("contador").innerText=cantidad;
 }
 
 function togglePanel(){
-    document.getElementById("panel").classList.toggle("activo");
+document.getElementById("panel").classList.toggle("activo");
 }
 
 function enviar(){
-    let txt="Pedido:%0A";
-    let total=0;
+let txt="🛒 PEDIDO SMART GSM%0A%0A";
+let total=0;
 
-    for(let i in cart){
-        let p=cart[i];
-        txt+=`- ${i} x${p.cantidad}%0A`;
-        total+=p.precio*p.cantidad;
-    }
-
-    txt+="Total Bs "+total;
-
-    window.open("https://wa.me/59170341190?text="+txt);
+for(let i in cart){
+let p=cart[i];
+txt+=`📱 ${i} x${p.cantidad}%0A`;
+total+=p.precio*p.cantidad;
 }
 
-/* IMAGEN */
-function generar(){
-    let c=document.createElement("canvas");
-    c.width=320;
-    c.height=400;
-    let ctx=c.getContext("2d");
-
-    ctx.fillStyle="white";
-    ctx.fillRect(0,0,320,400);
-
-    ctx.fillStyle="black";
-    ctx.font="18px Arial";
-    ctx.fillText("SMART GSM",90,30);
-
-    let y=70;
-    let total=0;
-
-    for(let i in cart){
-        let p=cart[i];
-        ctx.fillText(i+" x"+p.cantidad,10,y);
-        y+=25;
-        total+=p.precio*p.cantidad;
-    }
-
-    ctx.fillText("Total Bs "+total,10,y+20);
-
-    let img = c.toDataURL();
-
-    let w = window.open("");
-    w.document.write("<img src='"+img+"'/>");
+txt+=`%0ATotal Bs ${total}`;
+window.open("https://wa.me/59170341190?text="+txt);
 }
 </script>
 
