@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart GSM</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+    background:#f4f6f9;
+}
+
+/* HEADER */
+header {
+    background:#111;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+}
+
+/* PRODUCTOS */
+.container {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap:15px;
+    padding:15px;
+}
+
+.card {
+    background:white;
+    border-radius:12px;
+    padding:10px;
+    text-align:center;
+}
+
+.card img {
+    width:100%;
+    height:140px;
+    object-fit:contain;
+}
+
+.btn {
+    background:#0d6efd;
+    color:white;
+    padding:8px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* PANEL */
+.panel {
+    position:fixed;
+    right:0;
+    top:0;
+    width:340px;
+    height:100%;
+    background:white;
+    box-shadow:-3px 0 10px rgba(0,0,0,0.2);
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+}
+
+.top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.vaciar {
+    background:#eee;
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.item {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:10px 0;
+}
+
+.controls button {
+    padding:3px 8px;
+}
+
+/* TOTAL */
+.total {
+    margin-top:auto;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* BOTONES */
+.btn2 {
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+}
+
+.imgPedido {
+    background:#ddd;
+}
+
+.whatsapp {
+    background:#25D366;
+    color:white;
+}
+
+/* MODAL */
+.modal {
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+}
+
+.modal canvas {
+    background:white;
+    padding:10px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>📱 Smart GSM</header>
+
+<div class="container">
+
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>POCO M8 PRO 12/512</p>
+<p>Bs 3254</p>
+<button class="btn" onclick="add('POCO M8 PRO 12/512',3254)">Agregar</button>
+</div>
+
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>POCO M8 PRO 8/256</p>
+<p>Bs 2832</p>
+<button class="btn" onclick="add('POCO M8 PRO 8/256',2832)">Agregar</button>
+</div>
+
+</div>
+
+<!-- PANEL -->
+<div class="panel">
+<div class="top">
+<h3>🧾 MI PEDIDO</h3>
+<button class="vaciar" onclick="vaciar()">Vaciar</button>
+</div>
+
+<div id="lista"></div>
+
+<div class="total">Total: Bs <span id="total">0</span></div>
+
+<button class="btn2 imgPedido" onclick="generar()">📸 Generar Imagen</button>
+<button class="btn2 whatsapp" onclick="enviar()">ENVIAR WHATSAPP</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="this.style.display='none'">
+<canvas id="canvas" width="300" height="400"></canvas>
+</div>
+
+<script>
+let cart = {};
+
+function add(nombre, precio){
+    if(!cart[nombre]){
+        cart[nombre] = {precio:precio,cantidad:1};
+    } else cart[nombre].cantidad++;
+    render();
+}
+
+function cambiar(nombre, val){
+    cart[nombre].cantidad += val;
+    if(cart[nombre].cantidad<=0) delete cart[nombre];
+    render();
+}
+
+function vaciar(){
+    cart = {};
+    render();
+}
+
+function render(){
+    let html="";
+    let total=0;
+
+    for(let item in cart){
+        let p=cart[item];
+        total+=p.precio*p.cantidad;
+
+        html+=`
+        <div class="item">
+            ${item}
+            <div class="controls">
+                <button onclick="cambiar('${item}',-1)">-</button>
+                ${p.cantidad}
+                <button onclick="cambiar('${item}',1)">+</button>
+            </div>
+        </div>`;
+    }
+
+    document.getElementById("lista").innerHTML=html;
+    document.getElementById("total").innerText=total;
+}
+
+function enviar(){
+    let txt="Pedido:%0A";
+    let total=0;
+
+    for(let i in cart){
+        let p=cart[i];
+        txt+=`- ${i} x${p.cantidad}%0A`;
+        total+=p.precio*p.cantidad;
+    }
+
+    txt+="Total Bs "+total;
+
+    window.open("https://wa.me/59170341190?text="+txt);
+}
+
+/* IMAGEN */
+function generar(){
+    let c=document.getElementById("canvas");
+    let ctx=c.getContext("2d");
+
+    ctx.fillStyle="white";
+    ctx.fillRect(0,0,300,400);
+
+    ctx.fillStyle="black";
+    ctx.font="16px Arial";
+    ctx.fillText("SMART GSM",80,30);
+
+    let y=60;
+    let total=0;
+
+    for(let i in cart){
+        let p=cart[i];
+        ctx.fillText(i+" x"+p.cantidad,10,y);
+        y+=20;
+        total+=p.precio*p.cantidad;
+    }
+
+    ctx.fillText("Total Bs "+total,10,y+20);
+
+    document.getElementById("modal").style.display="flex";
+}
+</script>
+
+</body>
+</html>
