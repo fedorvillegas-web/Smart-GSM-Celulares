@@ -9,7 +9,6 @@
 body {margin:0;font-family:Arial;background:#f4f6f9;}
 header {background:#111;color:white;padding:15px;text-align:center;font-size:22px;}
 
-/* BOTON */
 #abrirCarrito {
     position:fixed;
     bottom:20px;
@@ -34,7 +33,6 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
     border-radius:50%;
 }
 
-/* GRID */
 .container {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -60,7 +58,6 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
     cursor:pointer;
 }
 
-/* PANEL */
 .panel {
     position: fixed;
     right: 0;
@@ -79,10 +76,22 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 .panel.activo {transform: translateX(0);}
 
 .top {display:flex;justify-content:space-between;}
+
 .item {margin:8px 0;}
+
 .total {margin-top:auto;font-size:20px;font-weight:bold;}
-.btn2 {margin-top:10px;padding:10px;border:none;border-radius:10px;}
+
+.btn2 {
+    margin-top:8px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
 .whatsapp {background:#25D366;color:white;}
+.vaciar {background:#dc3545;color:white;}
+.ver {background:#333;color:white;}
 </style>
 </head>
 
@@ -96,23 +105,26 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 <div class="container" id="productos"></div>
 
-<!-- PANEL -->
 <div class="panel" id="panel">
+
 <div class="top">
 <h3>🧾 Pedido</h3>
 <button onclick="togglePanel()">❌</button>
 </div>
 
 <div id="lista"></div>
+
 <div class="total">Total: Bs <span id="total">0</span></div>
 
-<button class="btn2 whatsapp" onclick="enviar()">Enviar WhatsApp</button>
+<button class="btn2 ver" onclick="generar()">👁 Ver Pedido</button>
+<button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar Pedido</button>
+<button class="btn2 whatsapp" onclick="enviar()">📲 Enviar WhatsApp</button>
+
 </div>
 
 <script>
 let cart = {};
 
-/* LISTA DE PRODUCTOS */
 const productos = [
 ["ALCATEL 3T 10 SMART 2/32",672],
 ["APPLE IPHONE 15 128GB",6019],
@@ -164,7 +176,6 @@ const productos = [
 ["XIAOMI REDMI 15C 4/256",1085]
 ];
 
-/* GENERAR PRODUCTOS */
 let html="";
 productos.forEach(p=>{
 html+=`
@@ -177,7 +188,6 @@ html+=`
 });
 document.getElementById("productos").innerHTML=html;
 
-/* CARRITO */
 function add(nombre, precio){
 if(!cart[nombre]) cart[nombre]={precio:precio,cantidad:1};
 else cart[nombre].cantidad++;
@@ -203,6 +213,11 @@ document.getElementById("total").innerText=total;
 document.getElementById("contador").innerText=cantidad;
 }
 
+function vaciar(){
+cart={};
+render();
+}
+
 function togglePanel(){
 document.getElementById("panel").classList.toggle("activo");
 }
@@ -219,6 +234,36 @@ total+=p.precio*p.cantidad;
 
 txt+=`%0ATotal Bs ${total}`;
 window.open("https://wa.me/59170341190?text="+txt);
+}
+
+function generar(){
+let c=document.createElement("canvas");
+c.width=320;
+c.height=400;
+let ctx=c.getContext("2d");
+
+ctx.fillStyle="white";
+ctx.fillRect(0,0,320,400);
+
+ctx.fillStyle="black";
+ctx.font="18px Arial";
+ctx.fillText("SMART GSM",90,30);
+
+let y=70;
+let total=0;
+
+for(let i in cart){
+let p=cart[i];
+ctx.fillText(i+" x"+p.cantidad,10,y);
+y+=25;
+total+=p.precio*p.cantidad;
+}
+
+ctx.fillText("Total Bs "+total,10,y+20);
+
+let img=c.toDataURL();
+let w=window.open("");
+w.document.write("<img src='"+img+"'/>");
 }
 </script>
 
