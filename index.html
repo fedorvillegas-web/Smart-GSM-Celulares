@@ -6,24 +6,81 @@
 <title>Smart GSM</title>
 
 <style>
-body {margin:0;font-family:Arial;background:#f4f6f9;}
-header {background:#111;color:white;padding:15px;text-align:center;font-size:22px;}
+body {
+    margin:0;
+    font-family: 'Segoe UI', Arial;
+    background:#f5f6fa;
+}
 
-/* BOTON */
+/* HEADER */
+header {
+    background:#0f172a;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* GRID */
+.container {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+/* CARD */
+.card {
+    background:white;
+    border-radius:16px;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    transition:0.2s;
+}
+
+.card:hover {
+    transform:translateY(-5px);
+}
+
+.card img {
+    width:100%;
+    height:140px;
+    object-fit:contain;
+}
+
+.price {
+    font-size:18px;
+    font-weight:bold;
+    margin:8px 0;
+}
+
+.btn {
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    width:100%;
+}
+
+/* BOTON CARRITO */
 #abrirCarrito {
     position:fixed;
     bottom:20px;
     right:20px;
-    background:#111;
+    background:#0f172a;
     color:white;
     border:none;
-    padding:15px;
+    padding:16px;
     border-radius:50%;
     font-size:20px;
     cursor:pointer;
 }
 
-#contador{
+#contador {
     position:absolute;
     top:-5px;
     right:-5px;
@@ -34,56 +91,40 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
     border-radius:50%;
 }
 
-/* PRODUCTOS */
-.container {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-    gap:15px;
-    padding:15px;
-}
-
-.card {
-    background:white;
-    border-radius:12px;
-    padding:10px;
-    text-align:center;
-}
-
-.card img {width:100%;height:140px;object-fit:contain;}
-
-.btn {
-    background:#0d6efd;
-    color:white;
-    padding:8px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
 /* PANEL */
 .panel {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 360px;
-    height: 100%;
-    background: white;
-    box-shadow: -3px 0 10px rgba(0,0,0,0.2);
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    transform: translateX(100%);
-    transition: 0.3s;
+    position:fixed;
+    right:0;
+    top:0;
+    width:350px;
+    height:100%;
+    background:white;
+    box-shadow:-5px 0 20px rgba(0,0,0,0.2);
+    padding:15px;
+    transform:translateX(100%);
+    transition:0.3s;
+    display:flex;
+    flex-direction:column;
 }
 
-.panel.activo {transform: translateX(0);}
+.panel.activo {transform:translateX(0);}
 
-.top {display:flex;justify-content:space-between;align-items:center;}
+/* OVERLAY */
+#overlay {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    display:none;
+}
+
+#overlay.activo {display:block;}
 
 .item {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin:10px 0;
     border-bottom:1px solid #eee;
     padding-bottom:5px;
@@ -91,10 +132,8 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 .controls button {
     padding:3px 8px;
-    margin:0 2px;
 }
 
-/* TOTAL */
 .total {
     margin-top:auto;
     font-size:20px;
@@ -112,7 +151,8 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 .whatsapp {background:#25D366;color:white;}
 .vaciar {background:#dc3545;color:white;}
-.ver {background:#333;color:white;}
+.ver {background:#111;color:white;}
+
 </style>
 </head>
 
@@ -120,20 +160,17 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 
 <header>📱 Smart GSM</header>
 
-<button id="abrirCarrito" onclick="togglePanel()">🛒
-<span id="contador">0</span>
+<div id="overlay" onclick="cerrarPanel()"></div>
+
+<button id="abrirCarrito" onclick="togglePanel()">
+🛒 <span id="contador">0</span>
 </button>
 
 <div class="container" id="productos"></div>
 
 <!-- PANEL -->
 <div class="panel" id="panel">
-
-<div class="top">
 <h3>🧾 Pedido</h3>
-<button onclick="togglePanel()">❌</button>
-</div>
-
 <div id="lista"></div>
 
 <div class="total">Total: Bs <span id="total">0</span></div>
@@ -141,71 +178,31 @@ header {background:#111;color:white;padding:15px;text-align:center;font-size:22p
 <button class="btn2 ver" onclick="generar()">👁 Ver Pedido</button>
 <button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar</button>
 <button class="btn2 whatsapp" onclick="enviar()">📲 WhatsApp</button>
-
 </div>
 
 <script>
 let cart = {};
+let timer;
 
+/* PRODUCTOS */
 const productos = [
-["ALCATEL 3T 10 SMART 2/32",672],
-["APPLE IPHONE 15 128GB",6019],
-["APPLE IPHONE 16 128GB",7037],
-["APPLE IPHONE 17 256GB",8774],
-["APPLE IPHONE 17 PRO MAX 256GB",13632],
-["APPLE IPHONE AIR 256GB",9024],
-["HONOR MAGIC 8 LITE 8/256",3120],
-["HONOR PAD X7 4/128",1190],
-["HONOR PAD X8A 4/128",1488],
-["HONOR X5C PLUS 4/256",1190],
-["HONOR X6C 8/256",1526],
-["HONOR X7D 6/256",1738],
-["HONOR X7D 8/256",1882],
-["HONOR X8D 8/256",2256],
-["HONOR X8D 8/512",2554],
-["INFINIX GT 30 PRO 12/512",3264],
-["INFINIX HOT 60 PRO+ 8/256",1920],
-["INFINIX NOTE 50 PRO 8/256",2131],
-["INFINIX NOTE 50S 5G 8/256",2112],
-["INFINIX NOTE 50X 8/256",1728],
-["REALME 14 PRO+ 5G 12/512",3792],
-["REALME 14T 8/256",2016],
-["REALME C71 8/256",1421],
-["REALME C85 8/256",1958],
-["REALME NOTE 70 4/128",1037],
-["REALME NOTE 70 8/256",1286],
-["TECNO POVA CURVE 2 5G",2774],
-["TECNO POVA 7 4G 8/256",1757],
-["TECNO POVA 7 5G 8/256",2189],
-["TECNO SPARK GO 3 4/64",835],
-["TECNO SPARK GO 3 4/128",922],
-["XIAOMI PAD 7 PRO 8/256",4320],
-["XIAOMI PAD MINI 12/512",4656],
-["XIAOMI POCO F8 PRO 12/256",4848],
-["XIAOMI POCO F8 ULTRA 12/256",6768],
-["XIAOMI POCO M7 PRO 12/512",2256],
-["XIAOMI POCO M8 5G 8/512",2371],
-["XIAOMI POCO M8 PRO 5G 12/512",3254],
-["XIAOMI POCO M8 PRO 5G 8/256",2832],
-["XIAOMI POCO PAD 8/256",2256],
-["XIAOMI POCO PAD M1 8/256",2678],
-["XIAOMI POCO PAD X1 8/512",3312],
-["XIAOMI POCO X7 PRO 5G 12/512",3379],
-["XIAOMI POCO X8 PRO 8/256",3053],
-["XIAOMI POCO X8 PRO 12/512",3648],
-["XIAOMI POCO X8 PRO MAX 12/512",4512],
-["XIAOMI REDMI 15C 4/128",989],
-["XIAOMI REDMI 15C 4/256",1085]
+["IPHONE 15 128GB",6019],
+["IPHONE 16 128GB",7037],
+["POCO F8 PRO",4848],
+["POCO X8 PRO",3648],
+["INFINIX GT 30 PRO",3264],
+["REALME 14 PRO+",3792],
+["HONOR X8D",2256]
 ];
 
-/* GENERAR PRODUCTOS */
+/* GENERAR */
 let html="";
 productos.forEach(p=>{
 html+=`
 <div class="card">
 <img src="https://via.placeholder.com/150">
 <p>${p[0]}</p>
-<p>Bs ${p[1]}</p>
+<p class="price">Bs ${p[1].toLocaleString()}</p>
 <button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>
 </div>`;
 });
@@ -215,8 +212,18 @@ document.getElementById("productos").innerHTML=html;
 function add(nombre, precio){
 if(!cart[nombre]) cart[nombre]={precio:precio,cantidad:1};
 else cart[nombre].cantidad++;
+
 render();
-document.getElementById("panel").classList.add("activo");
+abrirPanelAuto();
+}
+
+function abrirPanelAuto(){
+togglePanel(true);
+
+clearTimeout(timer);
+timer=setTimeout(()=>{
+cerrarPanel();
+},3000);
 }
 
 function cambiar(nombre,val){
@@ -238,27 +245,42 @@ cantidad+=p.cantidad;
 
 html+=`
 <div class="item">
-    <div style="width:45%">${i}</div>
+<div>${i}</div>
 
-    <div class="controls">
-        <button onclick="cambiar('${i}',-1)">−</button>
-        ${p.cantidad}
-        <button onclick="cambiar('${i}',1)">+</button>
-    </div>
+<div class="controls">
+<button onclick="cambiar('${i}',-1)">−</button>
+${p.cantidad}
+<button onclick="cambiar('${i}',1)">+</button>
+</div>
 
-    <div>Bs ${subtotal}</div>
+<div>Bs ${subtotal.toLocaleString()}</div>
 </div>`;
 }
 
 document.getElementById("lista").innerHTML=html;
-document.getElementById("total").innerText=total;
+document.getElementById("total").innerText=total.toLocaleString();
 document.getElementById("contador").innerText=cantidad;
 }
 
 function vaciar(){cart={};render();}
 
-function togglePanel(){
-document.getElementById("panel").classList.toggle("activo");
+function togglePanel(force){
+const panel=document.getElementById("panel");
+const overlay=document.getElementById("overlay");
+
+if(force===true){
+panel.classList.add("activo");
+overlay.classList.add("activo");
+return;
+}
+
+panel.classList.toggle("activo");
+overlay.classList.toggle("activo");
+}
+
+function cerrarPanel(){
+document.getElementById("panel").classList.remove("activo");
+document.getElementById("overlay").classList.remove("activo");
 }
 
 function enviar(){
@@ -276,33 +298,7 @@ window.open("https://wa.me/59170341190?text="+txt);
 }
 
 function generar(){
-let c=document.createElement("canvas");
-c.width=320;
-c.height=400;
-let ctx=c.getContext("2d");
-
-ctx.fillStyle="white";
-ctx.fillRect(0,0,320,400);
-
-ctx.fillStyle="black";
-ctx.font="18px Arial";
-ctx.fillText("SMART GSM",90,30);
-
-let y=70;
-let total=0;
-
-for(let i in cart){
-let p=cart[i];
-ctx.fillText(i+" x"+p.cantidad,10,y);
-y+=25;
-total+=p.precio*p.cantidad;
-}
-
-ctx.fillText("Total Bs "+total,10,y+20);
-
-let img=c.toDataURL();
-let w=window.open("");
-w.document.write("<img src='"+img+"'/>");
+alert("Función de imagen lista para mejorar 😏");
 }
 </script>
 
