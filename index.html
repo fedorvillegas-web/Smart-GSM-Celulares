@@ -21,6 +21,21 @@ header {
     font-size:22px;
 }
 
+/* BOTON CARRITO */
+#abrirCarrito {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#111;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:50%;
+    font-size:20px;
+    cursor:pointer;
+    z-index:1000;
+}
+
 /* PRODUCTOS */
 .container {
     display:grid;
@@ -51,7 +66,7 @@ header {
     cursor:pointer;
 }
 
-/* PANEL */
+/* PANEL OCULTO */
 .panel {
     position:fixed;
     right:0;
@@ -63,6 +78,14 @@ header {
     padding:15px;
     display:flex;
     flex-direction:column;
+
+    transform: translateX(100%);
+    transition:0.3s;
+}
+
+/* PANEL ACTIVO */
+.panel.activo {
+    transform: translateX(0);
 }
 
 .top {
@@ -71,12 +94,21 @@ header {
     align-items:center;
 }
 
+.cerrar {
+    background:#eee;
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
 .vaciar {
     background:#eee;
     border:none;
     padding:5px 10px;
     border-radius:6px;
     cursor:pointer;
+    margin-left:5px;
 }
 
 .item {
@@ -114,29 +146,15 @@ header {
     background:#25D366;
     color:white;
 }
-
-/* MODAL */
-.modal {
-    display:none;
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:rgba(0,0,0,0.7);
-    justify-content:center;
-    align-items:center;
-}
-
-.modal canvas {
-    background:white;
-    padding:10px;
-    border-radius:10px;
-}
 </style>
 </head>
 
 <body>
 
 <header>📱 Smart GSM</header>
+
+<!-- BOTON -->
+<button id="abrirCarrito" onclick="togglePanel()">🛒</button>
 
 <div class="container">
 
@@ -154,13 +172,38 @@ header {
 <button class="btn" onclick="add('POCO M8 PRO 8/256',2832)">Agregar</button>
 </div>
 
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>POCO PAD 8/256</p>
+<p>Bs 2256</p>
+<button class="btn" onclick="add('POCO PAD 8/256',2256)">Agregar</button>
+</div>
+
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>POCO PAD M1 8/256</p>
+<p>Bs 2678</p>
+<button class="btn" onclick="add('POCO PAD M1 8/256',2678)">Agregar</button>
+</div>
+
+<div class="card">
+<img src="https://via.placeholder.com/150">
+<p>POCO PAD X1 8/512</p>
+<p>Bs 3312</p>
+<button class="btn" onclick="add('POCO PAD X1 8/512',3312)">Agregar</button>
+</div>
+
 </div>
 
 <!-- PANEL -->
-<div class="panel">
+<div class="panel" id="panel">
+
 <div class="top">
 <h3>🧾 MI PEDIDO</h3>
+<div>
 <button class="vaciar" onclick="vaciar()">Vaciar</button>
+<button class="cerrar" onclick="togglePanel()">❌</button>
+</div>
 </div>
 
 <div id="lista"></div>
@@ -169,11 +212,7 @@ header {
 
 <button class="btn2 imgPedido" onclick="generar()">📸 Generar Imagen</button>
 <button class="btn2 whatsapp" onclick="enviar()">ENVIAR WHATSAPP</button>
-</div>
 
-<!-- MODAL -->
-<div class="modal" id="modal" onclick="this.style.display='none'">
-<canvas id="canvas" width="300" height="400"></canvas>
 </div>
 
 <script>
@@ -183,7 +222,11 @@ function add(nombre, precio){
     if(!cart[nombre]){
         cart[nombre] = {precio:precio,cantidad:1};
     } else cart[nombre].cantidad++;
+
     render();
+
+    // abre automáticamente
+    document.getElementById("panel").classList.add("activo");
 }
 
 function cambiar(nombre, val){
@@ -220,6 +263,10 @@ function render(){
     document.getElementById("total").innerText=total;
 }
 
+function togglePanel(){
+    document.getElementById("panel").classList.toggle("activo");
+}
+
 function enviar(){
     let txt="Pedido:%0A";
     let total=0;
@@ -237,29 +284,34 @@ function enviar(){
 
 /* IMAGEN */
 function generar(){
-    let c=document.getElementById("canvas");
+    let c=document.createElement("canvas");
+    c.width=320;
+    c.height=400;
     let ctx=c.getContext("2d");
 
     ctx.fillStyle="white";
-    ctx.fillRect(0,0,300,400);
+    ctx.fillRect(0,0,320,400);
 
     ctx.fillStyle="black";
-    ctx.font="16px Arial";
-    ctx.fillText("SMART GSM",80,30);
+    ctx.font="18px Arial";
+    ctx.fillText("SMART GSM",90,30);
 
-    let y=60;
+    let y=70;
     let total=0;
 
     for(let i in cart){
         let p=cart[i];
         ctx.fillText(i+" x"+p.cantidad,10,y);
-        y+=20;
+        y+=25;
         total+=p.precio*p.cantidad;
     }
 
     ctx.fillText("Total Bs "+total,10,y+20);
 
-    document.getElementById("modal").style.display="flex";
+    let img = c.toDataURL();
+
+    let w = window.open("");
+    w.document.write("<img src='"+img+"'/>");
 }
 </script>
 
