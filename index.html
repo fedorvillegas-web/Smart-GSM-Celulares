@@ -44,6 +44,11 @@ transform: scale(1.05);
 box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+.card.agotado {
+opacity:0.6;
+filter:grayscale(100%);
+}
+
 .badge {
 position:absolute;top:10px;left:10px;
 background:#dc3545;color:white;
@@ -186,12 +191,12 @@ cursor:pointer;font-size:14px;
 let cart={};
 
 let productos=[
-["Alcatel 3T 10 Smart 2/32",672,false,"img/alcatel.jpg"],
+["Alcatel 3T 10 Smart 2/32",672,false],
 ["Apple Iphone 15 128GB",6019,false,"img/iphone15.jpg"],
-["Apple Iphone 16 128GB",7037,false,"img/iphone16.jpg"],
-["Apple Iphone 17 256GB",8774,false,"img/iphone17.jpg"],
-["Apple Iphone 17 Pro Max 256GB",13632,false,"img/iphone17promax.png"],
-["Apple Iphone Air 256GB",9024,false,"img/iphoneair.jpg"],
+["Apple Iphone 16 128GB",7037,true],
+["Apple Iphone 17 256GB",8774,false],
+["Apple Iphone 17 Pro Max 256GB",13632,true],
+["Apple Iphone Air 256GB",9024,false],
 ["Honor Magic 8 Lite 8/256",3120,false],
 ["Honor Pad X7 4/128",1190,false],
 ["Honor Pad X8A 4/128",1488,false],
@@ -242,14 +247,19 @@ lista.forEach(p=>{
 let img = p[3] ? p[3] : "img/default.png";
 
 html+=`
-<div class="card">
-${p[2]?'<div class="badge">🔥 OFERTA</div>':''}
+<div class="card ${p[2] ? 'agotado' : ''}">
+${p[2]?'<div class="badge">❌ AGOTADO</div>':''}
 <img src="${img}">
 <p>${p[0]}</p>
 <p class="price">Bs ${p[1].toLocaleString()}</p>
 
+${p[2] ? `
+<button class="btn" disabled>Sin stock</button>
+<button class="btn buy" disabled>No disponible</button>
+` : `
 <button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>
 <button class="btn buy" onclick="comprar('${p[0]}',${p[1]})">Comprar ahora</button>
+`}
 </div>`;
 });
 document.getElementById("productos").innerHTML=html;
@@ -364,4 +374,3 @@ alert(decodeURIComponent(txt));
 
 </body>
 </html>
-```
