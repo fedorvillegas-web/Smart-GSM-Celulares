@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,6 +37,12 @@ gap:20px;padding:20px;
 background:white;border-radius:16px;padding:15px;
 text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.08);
 position:relative;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+transform: scale(1.05);
+box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .badge {
@@ -44,7 +51,14 @@ background:#dc3545;color:white;
 padding:4px 8px;border-radius:6px;font-size:12px;
 }
 
-.card img {width:100%;height:140px;object-fit:contain;}
+.card img {
+width:100%;height:140px;object-fit:contain;
+transition: transform 0.3s ease;
+}
+
+.card:hover img {
+transform: scale(1.1);
+}
 
 .price {font-weight:bold;margin:8px 0;font-size:18px;}
 
@@ -59,7 +73,7 @@ padding:10px;border-radius:10px;width:100%;cursor:pointer;margin-top:5px;
 position:fixed;
 bottom:20px;
 right:20px;
-background:#000; /* NEGRO */
+background:#000;
 color:white;
 border:none;
 padding:18px;
@@ -226,7 +240,7 @@ let productos=[
 function mostrar(lista){
 let html="";
 lista.forEach(p=>{
-let img = p[3];
+let img = p[3] ? p[3] : "img/default.png";
 
 html+=`
 <div class="card">
@@ -305,10 +319,9 @@ Hola, quiero comprar:
 ¿Está disponible?`;
 
 let url = "https://wa.me/59170341190?text=" + encodeURIComponent(txt);
-
 window.open(url, "_blank");
 }
-  
+
 function vaciar(){cart={};render();}
 
 function togglePanel(){
@@ -352,3 +365,4 @@ alert(decodeURIComponent(txt));
 
 </body>
 </html>
+```
