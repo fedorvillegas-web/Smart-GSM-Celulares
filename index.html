@@ -342,18 +342,11 @@ let html="<strong>📲 Elegir vendedor:</strong>";
 
 vendedores.forEach(v=>{
 
-let clase = v.nombre.toLowerCase(); // usa el nombre como clase
-
-let accion = "Comprar";
-if(v.nombre=="Eliana") accion="Asesoría";
-if(v.nombre=="Pamela") accion="Cotizar";
-if(v.nombre=="Judith") accion="Disponible";
-if(v.nombre=="Janine") accion="Atención";
+let clase = v.nombre.toLowerCase();
 
 html+=`
 <button class="${clase}" onclick="enviarA('${v.nombre}','${v.numero}')">
-<span>${v.nombre}</span>
-<span>${accion}</span>
+${v.nombre}
 </button>
 `;
 
