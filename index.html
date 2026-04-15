@@ -184,7 +184,9 @@ cursor:pointer;font-size:14px;
 <div class="total">💰 Total: Bs <span id="total">0</span></div>
 
 <button class="btn2 ver" onclick="verPedido()">🧾 Ver pedido</button>
-<button class="btn2 whatsapp" onclick="enviar()">📲 WhatsApp</button>
+
+<div id="whatsappVendedores" style="display:flex;flex-direction:column;gap:6px;"></div>
+
 <button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar</button>
 </div>
 </div>
@@ -192,6 +194,15 @@ cursor:pointer;font-size:14px;
 <script>
 let cart={};
 let ocultarAgotados=false;
+
+let vendedores = [
+{nombre:"Fedor", numero:"59170341190"},
+{nombre:"Eliana", numero:"59165391513"},
+{nombre:"Pamela", numero:"59165391518"},
+{nombre:"Judith", numero:"59165391339"},
+{nombre:"Fabiola", numero:"59164858964"},
+{nombre:"Janine", numero:"59160751226"}
+];
 
 let productos=[
 ["Alcatel 3T 10 Smart 2/32",665,false,"img/alcatel.jpg"],
@@ -204,19 +215,19 @@ let productos=[
 ["Apple Iphone 17 Pro Max 256GB",13443,false,"img/iphone17promax.png"],
 ["Apple Iphone Air 256GB",8883,false,"img/iphoneair.jpg"],
 
-["Honor Magic 8 Lite 8/256",3088,false,"img/magic8lite.png"],
+["Honor Magic 8 Lite 8/256",3088,false],
 ["Honor Magic 8 Lite 8/512",3430,true],
 ["Honor Magic 8 Pro 12/512",11733,true],
 ["Honor Pad 10 8/256",3187,true],
-["Honor Pad X7 4/128",1178,false,"img/padx7.png"],
-["Honor Pad X8A 4/128",1473,false,"img/padx8a.png"],
+["Honor Pad X7 4/128",1178,false],
+["Honor Pad X8A 4/128",1473,false],
 ["Honor Pad X9A 8/128 + Teclado",2323,true],
 ["Honor X5C 4/128",789,true],
 ["Honor X5C 4/64",741,true],
-["Honor X5C Plus 4/256",1178,false,"img/x5cplus.png"],
+["Honor X5C Plus 4/256",1178,false],
 ["Honor X6C 6/256",1216,true],
-["Honor X6C 8/256",1511,false,"img/x6c.png"],
-["Honor X7D 6/256",1710,false,"img/x7d6.png"],
+["Honor X6C 8/256",1511,false],
+["Honor X7D 6/256",1710,false],
 ["Honor X7D 8/256",1853,false],
 ["Honor X8C 8/256",1805,true],
 ["Honor X8D 8/256",2166,false],
@@ -312,40 +323,42 @@ ${p[2] ? `
 document.getElementById("productos").innerHTML=html;
 }
 
-mostrar(productos);
-
 function toggleAgotados(btn){
 ocultarAgotados=!ocultarAgotados;
 btn.textContent = ocultarAgotados ? "Mostrar agotados" : "Ocultar agotados";
 mostrar(productos);
 }
 
-mostrar(productos);
+function renderVendedores(){
+let html="<strong>📲 Elegir vendedor:</strong>";
 
-/* FILTRO CORREGIDO */
-function filtrar(marca){
-if(!marca){mostrar(productos);return;}
+vendedores.forEach(v=>{
+html += `
+<button class="btn2 whatsapp" onclick="enviar('${v.numero}','${v.nombre}')">
+📲 ${v.nombre}
+</button>
+`;
+});
 
-let filtrado = productos.filter(p => 
-p[0].toLowerCase().includes(marca.toLowerCase())
-);
-
-mostrar(filtrado);
+document.getElementById("whatsappVendedores").innerHTML = html;
 }
 
-/* BOTON ACTIVO */
-document.querySelectorAll("#filtros button").forEach(btn=>{
-btn.addEventListener("click", function(){
-document.querySelectorAll("#filtros button").forEach(b=>b.classList.remove("activo"));
-this.classList.add("activo");
-});
-});
+function enviar(numero,nombre){
+let txt="🛒 *SMART GSM*%0A%0A";
+let total=0;
 
-document.getElementById("buscador").addEventListener("input",e=>{
-let val=e.target.value.toLowerCase();
-let filtrado=productos.filter(p=>p[0].toLowerCase().includes(val));
-mostrar(filtrado);
-});
+txt += "Hola " + nombre + ", quiero realizar el siguiente pedido:%0A%0A";
+
+for(let i in cart){
+let p=cart[i];
+txt+=`📱 ${i} x${p.cantidad}%0A`;
+total+=p.precio*p.cantidad;
+}
+
+txt+=`%0ATotal: Bs ${total}`;
+
+window.open("https://wa.me/"+numero+"?text="+txt);
+}
 
 function add(n,p){
 if(!cart[n]) cart[n]={precio:p,cantidad:1};
@@ -385,20 +398,6 @@ if(cart[n].cantidad<=0) delete cart[n];
 render();
 }
 
-function comprar(n,p){
-let txt = `🛒 *SMART GSM*
-
-Hola, quiero comprar:
-
-📱 ${n}
-💰 Precio: Bs ${p.toLocaleString()}
-
-¿Está disponible?`;
-
-let url = "https://wa.me/59170341190?text=" + encodeURIComponent(txt);
-window.open(url, "_blank");
-}
-
 function vaciar(){cart={};render();}
 
 function togglePanel(){
@@ -409,20 +408,6 @@ document.getElementById("overlay").classList.toggle("activo");
 function cerrarPanel(){
 document.getElementById("panel").classList.remove("activo");
 document.getElementById("overlay").classList.remove("activo");
-}
-
-function enviar(){
-let txt="🛒 PEDIDO SMART GSM%0A%0A";
-let total=0;
-
-for(let i in cart){
-let p=cart[i];
-txt+=`📱 ${i} x${p.cantidad}%0A`;
-total+=p.precio*p.cantidad;
-}
-
-txt+=`%0ATotal Bs ${total}`;
-window.open("https://wa.me/59170341190?text="+txt);
 }
 
 function verPedido(){
@@ -438,6 +423,21 @@ total+=p.precio*p.cantidad;
 txt+=`%0ATotal: Bs ${total}`;
 alert(decodeURIComponent(txt));
 }
+
+document.getElementById("buscador").addEventListener("input",e=>{
+let val=e.target.value.toLowerCase();
+let filtrado=productos.filter(p=>p[0].toLowerCase().includes(val));
+mostrar(filtrado);
+});
+
+function filtrar(marca){
+if(!marca){mostrar(productos);return;}
+let filtrado=productos.filter(p=>p[0].toLowerCase().includes(marca));
+mostrar(filtrado);
+}
+
+mostrar(productos);
+renderVendedores();
 </script>
 
 </body>
