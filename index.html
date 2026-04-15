@@ -19,7 +19,6 @@ input {
 padding:8px;border-radius:8px;border:none;width:200px;
 }
 
-/* FILTROS PRO */
 #filtros {display:flex;gap:8px;flex-wrap:wrap;}
 
 #filtros button {
@@ -46,7 +45,6 @@ color:white;
 border-color:#000;
 }
 
-/* PRODUCTOS */
 .container {
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -65,10 +63,7 @@ transform: scale(1.05);
 box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* AGOTADO PRO */
-.card.agotado {
-filter: grayscale(100%) brightness(0.85);
-}
+.card.agotado {filter: grayscale(100%) brightness(0.85);}
 
 .badge {
 position:absolute;top:10px;left:10px;
@@ -92,7 +87,6 @@ padding:10px;border-radius:10px;width:100%;cursor:pointer;margin-top:5px;
 
 .buy {background:#25D366;}
 
-/* CARRITO */
 #abrirCarrito {
 position:fixed;bottom:20px;right:20px;
 background:#000;color:white;border:none;
@@ -151,7 +145,6 @@ cursor:pointer;font-size:14px;
 .whatsapp {background:#25D366;color:white;}
 .vaciar {background:#dc3545;color:white;}
 .ver {background:#0d6efd;color:white;}
-
 </style>
 </head>
 
@@ -171,6 +164,7 @@ cursor:pointer;font-size:14px;
 <button onclick="filtrar('realme')">Realme</button>
 <button onclick="filtrar('tecno')">Tecno</button>
 <button onclick="filtrar('infinix')">Infinix</button>
+<button onclick="toggleAgotados(this)">Ocultar agotados</button>
 </div>
 </header>
 
@@ -197,6 +191,7 @@ cursor:pointer;font-size:14px;
 
 <script>
 let cart={};
+let ocultarAgotados=false;
 
 let productos=[
 ["Alcatel 3T 10 Smart 2/32",665,false,"img/alcatel.jpg"],
@@ -294,6 +289,8 @@ let productos=[
 function mostrar(lista){
 let html="";
 lista.forEach(p=>{
+if(ocultarAgotados && p[2]) return;
+
 let img = p[3] ? p[3] : "img/default.png";
 
 html+=`
@@ -313,6 +310,14 @@ ${p[2] ? `
 </div>`;
 });
 document.getElementById("productos").innerHTML=html;
+}
+
+mostrar(productos);
+
+function toggleAgotados(btn){
+ocultarAgotados=!ocultarAgotados;
+btn.textContent = ocultarAgotados ? "Mostrar agotados" : "Ocultar agotados";
+mostrar(productos);
 }
 
 mostrar(productos);
