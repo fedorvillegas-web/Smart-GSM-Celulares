@@ -341,15 +341,11 @@ function renderVendedores(){
 let html="<strong>📲 Elegir vendedor:</strong>";
 
 vendedores.forEach(v=>{
-
-let clase = v.nombre.toLowerCase();
-
-html+=`
-<button class="${clase}" onclick="enviarA('${v.nombre}','${v.numero}')">
-${v.nombre}
+html += `
+<button class="btn2 whatsapp" onclick="enviar('${v.numero}','${v.nombre}')">
+📲 ${v.nombre}
 </button>
 `;
-
 });
 
 document.getElementById("whatsappVendedores").innerHTML = html;
