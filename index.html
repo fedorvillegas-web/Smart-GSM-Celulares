@@ -440,6 +440,18 @@ else cart[n].cantidad++;
 render();
 }
 
+function comprar(n,p){
+
+if(!cart[n]) cart[n]={precio:p,cantidad:1};
+else cart[n].cantidad++;
+
+render();
+
+document.getElementById("panel").classList.add("activo");
+document.getElementById("overlay").classList.add("activo");
+
+}
+
 function render(){
 let html="",total=0,cant=0;
 
