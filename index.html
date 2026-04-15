@@ -15,18 +15,35 @@ display:flex;flex-direction:column;gap:10px;
 
 .topbar {display:flex;justify-content:space-between;align-items:center;}
 
-input {padding:8px;border-radius:8px;border:none;width:200px;}
+input {
+padding:8px;border-radius:8px;border:none;width:200px;
+}
 
 #filtros {display:flex;gap:8px;flex-wrap:wrap;}
 
 #filtros button {
-background:white;border:1px solid #d1d5db;
-padding:8px 14px;border-radius:20px;
-cursor:pointer;font-size:13px;
-transition:0.25s;
+background:white;
+border:1px solid #d1d5db;
+padding:8px 14px;
+border-radius:20px;
+cursor:pointer;
+font-size:13px;
+font-weight:500;
+transition:all 0.25s ease;
 }
 
-#filtros button:hover {background:#000;color:white;}
+#filtros button:hover {
+background:#000;
+color:white;
+border-color:#000;
+transform:scale(1.05);
+}
+
+#filtros button.activo {
+background:#000;
+color:white;
+border-color:#000;
+}
 
 .container {
 display:grid;
@@ -36,15 +53,17 @@ gap:20px;padding:20px;
 
 .card {
 background:white;border-radius:16px;padding:15px;
-text-align:center;
-box-shadow:0 5px 15px rgba(0,0,0,0.08);
+text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.08);
 position:relative;
-transition:0.3s;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover {transform:scale(1.05);}
+.card:hover {
+transform: scale(1.05);
+box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
 
-.card.agotado {filter:grayscale(100%) brightness(0.85);}
+.card.agotado {filter: grayscale(100%) brightness(0.85);}
 
 .badge {
 position:absolute;top:10px;left:10px;
@@ -52,51 +71,80 @@ background:#dc3545;color:white;
 padding:4px 8px;border-radius:6px;font-size:12px;
 }
 
-.card img {width:100%;height:140px;object-fit:contain;}
+.card img {
+width:100%;height:140px;object-fit:contain;
+transition: transform 0.3s ease;
+}
 
-.price {font-weight:bold;font-size:18px;margin:8px 0;}
+.card:hover img {transform: scale(1.1);}
+
+.price {font-weight:bold;margin:8px 0;font-size:18px;}
 
 .btn {
 background:#0d6efd;color:white;border:none;
-padding:10px;border-radius:10px;width:100%;
-cursor:pointer;margin-top:5px;
+padding:10px;border-radius:10px;width:100%;cursor:pointer;margin-top:5px;
 }
 
 .buy {background:#25D366;}
 
+#abrirCarrito {
+position:fixed;bottom:20px;right:20px;
+background:#000;color:white;border:none;
+padding:18px;border-radius:50%;
+font-size:22px;z-index:999;
+box-shadow:0 5px 15px rgba(0,0,0,0.4);
+}
+
+#contador {
+position:absolute;top:-5px;right:-5px;
+background:red;color:white;font-size:12px;
+padding:3px 6px;border-radius:50%;
+}
+
 .panel {
 position:fixed;right:0;top:0;width:350px;height:100%;
-background:white;padding:15px;
+background:white;
+box-shadow:-5px 0 20px rgba(0,0,0,0.2);
+padding:15px;
 transform:translateX(100%);
 transition:0.3s;
 display:flex;flex-direction:column;
-overflow-y:auto;
+z-index:1000;
 }
-
 .panel.activo {transform:translateX(0);}
 
-.vendedores button {
-width:100%;margin-top:8px;
-padding:12px;border:none;border-radius:12px;
-color:white;font-weight:bold;cursor:pointer;
-transition:0.2s;
+#overlay {
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.4);display:none;
+z-index:999;
+}
+#overlay.activo {display:block;}
+
+.item {
+display:flex;justify-content:space-between;
+align-items:center;background:#f9fafb;
+padding:8px;border-radius:10px;margin:8px 0;
 }
 
-.vendedores button:hover {transform:scale(1.03);}
-
-.fedor{background:linear-gradient(45deg,#25D366,#128C7E);}
-.eliana{background:linear-gradient(45deg,#111,#444);}
-.pamela{background:linear-gradient(45deg,#6f42c1,#9b59b6);}
-.judith{background:linear-gradient(45deg,#ff6b81,#ff9ff3);}
-.fabiola{background:linear-gradient(45deg,#ff9f43,#ff6b6b);}
-.janine{background:linear-gradient(45deg,#0984e3,#74b9ff);}
-
-#abrirCarrito {
-position:fixed;bottom:20px;right:20px;
-background:black;color:white;
-padding:18px;border-radius:50%;
-font-size:20px;
+.controls button {
+background:#e5e7eb;border:none;
+padding:4px 8px;border-radius:6px;
+cursor:pointer;
 }
+
+.footer-carrito {margin-top:auto;padding-top:10px;}
+
+.total {font-size:20px;font-weight:bold;margin-bottom:10px;}
+
+.btn2 {
+width:100%;padding:12px;border:none;
+border-radius:10px;margin-top:5px;
+cursor:pointer;font-size:14px;
+}
+
+.whatsapp {background:#25D366;color:white;}
+.vaciar {background:#dc3545;color:white;}
+.ver {background:#0d6efd;color:white;}
 </style>
 </head>
 
@@ -105,54 +153,67 @@ font-size:20px;
 <header>
 <div class="topbar">
 <div>📱 Smart GSM</div>
-<input id="buscador" placeholder="Buscar...">
+<input type="text" id="buscador" placeholder="Buscar...">
 </div>
 
 <div id="filtros">
-<button onclick="filtrar('')">Todos</button>
+<button onclick="filtrar('')" class="activo">Todos</button>
 <button onclick="filtrar('apple')">Apple</button>
 <button onclick="filtrar('xiaomi')">Xiaomi</button>
 <button onclick="filtrar('honor')">Honor</button>
 <button onclick="filtrar('realme')">Realme</button>
 <button onclick="filtrar('tecno')">Tecno</button>
 <button onclick="filtrar('infinix')">Infinix</button>
-<button onclick="toggleAgotados()">Ocultar agotados</button>
+<button onclick="toggleAgotados(this)">Ocultar agotados</button>
 </div>
 </header>
 
-<button id="abrirCarrito" onclick="togglePanel()">🛒</button>
+<div id="overlay" onclick="cerrarPanel()"></div>
+
+<button id="abrirCarrito" onclick="togglePanel()">
+🛒 <span id="contador">0</span>
+</button>
 
 <div class="container" id="productos"></div>
 
 <div class="panel" id="panel">
 <h3>🧾 Pedido</h3>
 <div id="lista"></div>
-<div><b>Total Bs <span id="total">0</span></b></div>
 
-<div class="vendedores">
-<button class="fedor" onclick="enviarA('Fedor','59170341190')">Fedor</button>
-<button class="eliana" onclick="enviarA('Eliana','59165391513')">Eliana</button>
-<button class="pamela" onclick="enviarA('Pamela','59165391518')">Pamela</button>
-<button class="judith" onclick="enviarA('Judith','59165391339')">Judith</button>
-<button class="fabiola" onclick="enviarA('Fabiola','59164858964')">Fabiola</button>
-<button class="janine" onclick="enviarA('Janine','59160751226')">Janine</button>
+<div class="footer-carrito">
+<div class="total">💰 Total: Bs <span id="total">0</span></div>
+
+<button class="btn2 ver" onclick="verPedido()">🧾 Ver pedido</button>
+
+<div id="whatsappVendedores" style="display:flex;flex-direction:column;gap:6px;"></div>
+
+<button class="btn2 vaciar" onclick="vaciar()">🗑 Vaciar</button>
 </div>
 </div>
 
 <script>
 let cart={};
-let ocultar=false;
+let ocultarAgotados=false;
 
-let productos = [
-["Alcatel 3T 10 Smart 2/32",665,false],
-["Apple Iphone 15 128GB",5957,false],
-["Apple Iphone 15 Pro 256GB",11020,true],
-["Apple Iphone 16 128GB",6964,false],
-["Apple Iphone 16 Plus 128GB",7410,true],
-["Apple Iphone 16 Pro Max 256GB",10735,true],
-["Apple Iphone 17 256GB",8683,false],
-["Apple Iphone 17 Pro Max 256GB",13443,false],
-["Apple Iphone Air 256GB",8883,false],
+let vendedores = [
+{nombre:"Fedor", numero:"59170341190"},
+{nombre:"Eliana", numero:"59165391513"},
+{nombre:"Pamela", numero:"59165391518"},
+{nombre:"Judith", numero:"59165391339"},
+{nombre:"Fabiola", numero:"59164858964"},
+{nombre:"Janine", numero:"59160751226"}
+];
+
+let productos=[
+["Alcatel 3T 10 Smart 2/32",665,false,"img/alcatel.jpg"],
+["Apple Iphone 15 128GB",5957,false,"img/iphone15.jpg"],
+["Apple Iphone 15 Pro 256GB",11020,true,"img/iphone15pro.png"],
+["Apple Iphone 16 128GB",6964,false,"img/iphone16.jpg"],
+["Apple Iphone 16 Plus 128GB",7410,true,"img/iphone16plus.png"],
+["Apple Iphone 16 Pro Max 256GB",10735,true,"img/iphone16promax.png"],
+["Apple Iphone 17 256GB",8683,false,"img/iphone17.jpg"],
+["Apple Iphone 17 Pro Max 256GB",13443,false,"img/iphone17promax.png"],
+["Apple Iphone Air 256GB",8883,false,"img/iphoneair.jpg"],
 
 ["Honor Magic 8 Lite 8/256",3088,false],
 ["Honor Magic 8 Lite 8/512",3430,true],
@@ -236,39 +297,67 @@ let productos = [
 ["Xiaomi Redmi Pad Se 8/256",1615,true]
 ];
 
-function mostrar(lista=productos){
+function mostrar(lista){
 let html="";
 lista.forEach(p=>{
-if(ocultar && p[2]) return;
+if(ocultarAgotados && p[2]) return;
+
+let img = p[3] ? p[3] : "img/default.png";
 
 html+=`
-<div class="card ${p[2]?'agotado':''}">
-${p[2]?'<div class="badge">AGOTADO</div>':''}
+<div class="card ${p[2] ? 'agotado' : ''}">
+${p[2]?'<div class="badge">❌ AGOTADO</div>':''}
+<img src="${img}">
 <p>${p[0]}</p>
 <p class="price">Bs ${p[1].toLocaleString()}</p>
-${p[2]?
-'<button disabled>Sin stock</button>' :
-`<button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>`}
+
+${p[2] ? `
+<button class="btn" disabled>Sin stock</button>
+<button class="btn buy" disabled>No disponible</button>
+` : `
+<button class="btn" onclick="add('${p[0]}',${p[1]})">Agregar</button>
+<button class="btn buy" onclick="comprar('${p[0]}',${p[1]})">Comprar ahora</button>
+`}
 </div>`;
 });
 document.getElementById("productos").innerHTML=html;
 }
 
-mostrar();
-
-function toggleAgotados(){
-ocultar=!ocultar;
-mostrar();
+function toggleAgotados(btn){
+ocultarAgotados=!ocultarAgotados;
+btn.textContent = ocultarAgotados ? "Mostrar agotados" : "Ocultar agotados";
+mostrar(productos);
 }
 
-document.getElementById("buscador").addEventListener("input",e=>{
-let val=e.target.value.toLowerCase();
-mostrar(productos.filter(p=>p[0].toLowerCase().includes(val)));
+function renderVendedores(){
+let html="<strong>📲 Elegir vendedor:</strong>";
+
+vendedores.forEach(v=>{
+html += `
+<button class="btn2 whatsapp" onclick="enviar('${v.numero}','${v.nombre}')">
+📲 ${v.nombre}
+</button>
+`;
 });
 
-function filtrar(m){
-if(!m) return mostrar();
-mostrar(productos.filter(p=>p[0].toLowerCase().includes(m)));
+document.getElementById("whatsappVendedores").innerHTML = html;
+}
+
+function enviar(numero,nombre){
+let txt="🛒 *SMART GSM*%0A%0A";
+let total=0;
+
+txt += "Hola " + nombre + ", quiero realizar el siguiente pedido:%0A%0A";
+
+for(let i in cart){
+let p=cart[i];
+txt+=`📱 ${i} x${p.cantidad}%0A`;
+total+=p.precio*p.cantidad;
+}
+
+txt+=`%0ATotal: Bs ${total}`;
+
+window.open("https://wa.me/"+numero+"?text="+txt);
 }
 
 function add(n,p){
@@ -278,28 +367,77 @@ render();
 }
 
 function render(){
-let html="",total=0;
+let html="",total=0,cant=0;
+
 for(let i in cart){
 let p=cart[i];
-total+=p.precio*p.cantidad;
-html+=`${i} x${p.cantidad}<br>`;
-}
-document.getElementById("lista").innerHTML=html;
-document.getElementById("total").innerText=total.toLocaleString();
+let sub=p.precio*p.cantidad;
+total+=sub;
+cant+=p.cantidad;
+
+html+=`
+<div class="item">
+<div>${i}</div>
+<div class="controls">
+<button onclick="cambiar('${i}',-1)">-</button>
+${p.cantidad}
+<button onclick="cambiar('${i}',1)">+</button>
+</div>
+<div>Bs ${sub.toLocaleString()}</div>
+</div>`;
 }
 
-function enviarA(nombre,num){
-let txt="🛒 Pedido:%0A";
-for(let i in cart){
-let p=cart[i];
-txt+=`${i} x${p.cantidad}%0A`;
+document.getElementById("lista").innerHTML=html;
+document.getElementById("total").innerText=total.toLocaleString();
+document.getElementById("contador").innerText=cant;
 }
-window.open(`https://wa.me/${num}?text=${txt}`);
+
+function cambiar(n,v){
+cart[n].cantidad+=v;
+if(cart[n].cantidad<=0) delete cart[n];
+render();
 }
+
+function vaciar(){cart={};render();}
 
 function togglePanel(){
 document.getElementById("panel").classList.toggle("activo");
+document.getElementById("overlay").classList.toggle("activo");
 }
+
+function cerrarPanel(){
+document.getElementById("panel").classList.remove("activo");
+document.getElementById("overlay").classList.remove("activo");
+}
+
+function verPedido(){
+let txt="🧾 RESUMEN%0A%0A";
+let total=0;
+
+for(let i in cart){
+let p=cart[i];
+txt+=`${i} x${p.cantidad} = Bs ${p.precio*p.cantidad}%0A`;
+total+=p.precio*p.cantidad;
+}
+
+txt+=`%0ATotal: Bs ${total}`;
+alert(decodeURIComponent(txt));
+}
+
+document.getElementById("buscador").addEventListener("input",e=>{
+let val=e.target.value.toLowerCase();
+let filtrado=productos.filter(p=>p[0].toLowerCase().includes(val));
+mostrar(filtrado);
+});
+
+function filtrar(marca){
+if(!marca){mostrar(productos);return;}
+let filtrado=productos.filter(p=>p[0].toLowerCase().includes(marca));
+mostrar(filtrado);
+}
+
+mostrar(productos);
+renderVendedores();
 </script>
 
 </body>
