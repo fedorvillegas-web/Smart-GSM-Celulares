@@ -102,14 +102,22 @@ padding:3px 6px;border-radius:50%;
 }
 
 .panel {
-position:fixed;right:0;top:0;width:350px;height:100%;
+position:fixed;
+right:0;
+top:0;
+width:350px;
+height:100%;
 background:white;
 box-shadow:-5px 0 20px rgba(0,0,0,0.2);
 padding:15px;
 transform:translateX(100%);
 transition:0.3s;
-display:flex;flex-direction:column;
+display:flex;
+flex-direction:column;
 z-index:1000;
+
+/* 👇 CLAVE */
+overflow-y:auto;
 }
 .panel.activo {transform:translateX(0);}
 
