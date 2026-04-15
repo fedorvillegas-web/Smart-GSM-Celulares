@@ -108,8 +108,10 @@ box-shadow:-5px 0 20px rgba(0,0,0,0.2);
 padding:15px;
 transform:translateX(100%);
 transition:0.3s;
-display:flex;flex-direction:column;
+display:flex;
+flex-direction:column;
 z-index:1000;
+overflow-y:auto; /* 👈 CLAVE */
 }
 .panel.activo {transform:translateX(0);}
 
