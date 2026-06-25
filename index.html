@@ -507,7 +507,7 @@ let productos=[
 function mostrar(lista){
 let html="";
 lista.forEach(p=>{
-if(ocultarAgotados && p[2]) return;
+if(p[2]) return;
 
 let img = p[3] ? p[3] : "img/default.png";
 
